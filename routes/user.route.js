@@ -39,6 +39,8 @@ router.post('/signin',function(req,res){
     User.findOne({email:req.body.email})
     .exec()
     .then(function(user){
+        if(!user)
+        return res.status(400).json({faile:"User does not exist"});
         bcrypt.compare(req.body.password,user.password,function(err,result){
             if(err){
                 return res.status(401).json({

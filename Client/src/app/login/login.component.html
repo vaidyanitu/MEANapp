@@ -1,0 +1,32 @@
+<div class="box" >
+    <form [formGroup]="LoginForm" style="margin-top:50px;" class="container" (ngSubmit)="OnSubmit(LoginForm.value)">
+      <div class="form-group">
+        <label for="Email">Email address</label>
+        <input type="email" class="form-control" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" formControlName="Email" id="Email" placeholder="Enter email">
+        <div class="errdisplay" *ngIf="LoginForm.controls['Email'].errors && !LoginForm.controls['Email'].pristine">
+          <div *ngIf="LoginForm.controls['Email'].errors.required">* Email is required</div>
+          <div *ngIf="LoginForm.controls['Email'].errors.pattern">* Enter valid email address</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" class="form-control" formControlName="Password" id="Password" placeholder="Password">
+        <div class="errdisplay" *ngIf="LoginForm.controls['Password'].errors && !LoginForm.controls['Password'].pristine">
+          <div *ngIf="LoginForm.controls['Password'].errors.required">* Password is required</div>
+        </div>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" (change)="setRemember()" formControlName="RememberMe" id="RememberMe">
+        <label class="form-check-label" for="RememberMe">Remember Me</label>
+      </div>
+      <br /><button type="submit" class="btn btn-primary" [disabled]="LoginForm.invalid">Login</button>
+      <a [routerLink]="['/register']" class="btn btn-link">Register</a><br />
+      <div class=" form-group">
+        <br />
+        <a [routerLink]="['/forgotPassword']">Forgot Password</a>
+      </div>
+    </form>
+    <!-- <div class="container"><br /><button (click)="googleSignIn()"><i class="fa fa-google" aria-hidden="true"> <b> SignIn </b></i></button></div> -->
+    <!--<button type="button" (click)="logOut()">Log Out</button>-->
+  </div>
+
