@@ -1,0 +1,21 @@
+<div class="container">
+<h1>Register</h1>
+
+<form [formGroup]="RegisterForm">
+  <div class="form-group">
+  <label> Email</label>
+  <input class="form-control" type="text" formControlName="Email"/>
+</div>
+<div class="form-group">
+    <label >Password</label>
+    <input type="text" class="form-control" formControlName="Password"/>
+</div>
+<div class="form-group">
+  <label >Confirm Password</label>
+  <input type="text" class="form-control" formControlName="ConfirmPassword"/>
+</div>
+<div class="form-group">
+    <button class="btn btn-primary" (click)="onRegister(RegisterForm.value)">Register</button>
+</div>
+</form>
+</div>
