@@ -4,6 +4,7 @@ var cors=require('cors');
 const bodyParser=require('body-parser');
 const mongoose= require('mongoose');
 const user=require('./routes/user.route');
+const promo= require('./Assignment/promorouter');
 const PORT=3000;
 
 
@@ -17,6 +18,7 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use('/user',user);
+app.use('/promotion',promo);
 //app.use(cors());
 
 

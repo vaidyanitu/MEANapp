@@ -39,6 +39,7 @@ Remember:boolean;
                      {headers:theaders})   
     .subscribe((x) => {
       console.log(x);
+      x=x.json();
       if (LoginFormValue.RememberMe == true) {
         localStorage.setItem('currentUser', JSON.stringify(x));
         localStorage.setItem('loggedIn', 'true');
