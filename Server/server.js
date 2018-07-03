@@ -6,30 +6,46 @@ const mongoose= require('mongoose');
 const user=require('./routes/user.route');
 const promo= require('./Assignment/promorouter');
 const PORT=3000;
-
+var cookieParser=require('cookie-parser');
 
 mongoose.connect('mongodb://localhost/jwtauth');
 
+app.use(cookieParser('12345-67890-09876-54321'));
+
 function auth(req,res,next){
-    console.log(req.headers);
-    var authHeader=req.headers.authorization;
-    if(!authHeader){
-        var err=new Error('You are not authenticated!');
-        res.setHeader('WWW-Authenticate','Basic');
-        err.status=401;
-        next(err);
-        return;
-    }
-    var auth= new Buffer(authHeader.split(' ')[1],'base64').toString().split(':');
-    var user=auth[0];
-    var pass=auth[1];
-    if(user=='admin' && pass=='password'){
-        next();//authorized        
-    }else{
-        var err= new Error('You are not authenticated!');
-        res.setHeader('WWWAuthenticate','Basic');
-        err.status=401;
-        next(err);
+ if(!req.signedCookies.user){
+        console.log(req.headers);
+        var authHeader=req.headers.authorization;
+        if(!authHeader){
+            var err=new Error('You are not authenticated!');
+            res.setHeader('WWW-Authenticate','Basic');
+            err.status=401;
+            next(err);
+            return;
+        }
+        var auth= new Buffer(authHeader.split(' ')[1],'base64').toString().split(':');
+        var user=auth[0];
+        var pass=auth[1];
+        if(user=='admin' && pass=='password'){
+            res.cookie('user','admin',{signed:true});
+            next();//authorized        
+        }
+        else{
+            var err= new Error('You are not authenticated!');
+            res.setHeader('WWWAuthenticate','Basic');
+            err.status=401;
+            next(err);
+        }
+        }
+else{
+        if(req.signedCookies.user==='admin'){
+            next();
+        }
+        else{
+            var err= new Error('You are not authenticated!');
+            err.status=401;
+            next(err);
+        }
     }
 }
 
