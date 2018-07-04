@@ -7,13 +7,29 @@ const user=require('./routes/user.route');
 const promo= require('./Assignment/promorouter');
 const PORT=3000;
 var cookieParser=require('cookie-parser');
+var session=require('express-session');
+var FileStore=require('session-file-store')(session);
+var userAuthentication=require('./routes/userAuthentication');
+
 
 mongoose.connect('mongodb://localhost/jwtauth');
 
-app.use(cookieParser('12345-67890-09876-54321'));
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+//app.use(cookieParser('12345-67890-09876-54321'));
+app.use(session({
+    name:'session-id',
+    secret:'12345-67890-09876-54321',
+    saveUninitialized:false,
+    resave:false,
+    store:new FileStore()
+}));
+app.use('/authentication',userAuthentication);
 
 function auth(req,res,next){
- if(!req.signedCookies.user){
+    console.log(req.session);
+
+ if(!req.session.user){
         console.log(req.headers);
         var authHeader=req.headers.authorization;
         if(!authHeader){
@@ -27,7 +43,7 @@ function auth(req,res,next){
         var user=auth[0];
         var pass=auth[1];
         if(user=='admin' && pass=='password'){
-            res.cookie('user','admin',{signed:true});
+            req.session.user='admin';
             next();//authorized        
         }
         else{
@@ -38,7 +54,7 @@ function auth(req,res,next){
         }
         }
 else{
-        if(req.signedCookies.user==='admin'){
+        if(req.session.user==='admin'){
             next();
         }
         else{
@@ -55,8 +71,7 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
-app.use(bodyParser.urlencoded({extended:false}));
-app.use(bodyParser.json());
+
 app.use('/user',user);
 app.use('/promotion',promo);
 //app.use(cors());
